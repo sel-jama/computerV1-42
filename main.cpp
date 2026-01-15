@@ -12,12 +12,11 @@
 
 int main(int ac, char **av){
     EquationParser equation("");
-    Term terms;
 
     if (ac <= 2){
         equation.loadEquation(av[1]);
         equation.normalizeEquation();
-        equation.extractTerms(terms);
+        equation.extractTerms();
     }
     else{
         cerr << "Error: expected exactly one argument" << endl;
