@@ -20,3 +20,4 @@ void changeRightSigns(string &str){
         }
     }
 }
+

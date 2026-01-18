@@ -49,16 +49,54 @@ void EquationCalculator::solveDegreeZero(){
     else
         cout << "No solution.";
     cout << endl;
-
 }
 
 void EquationCalculator::solveDegreeOne(){
-    double a, b;
+    double a, b, c;
+    double sol;
     for (auto it = terms.begin(); it != terms.end(); it++){
-        if(it->expo == 1) a = it->coeff;
-        else b = it->coeff;
+        if(it->expo == 2) a = it->coeff;
+        else if (it->expo == 1) b = it->coeff;
+        else c=it->coeff;
     }
+    if(a == 0){
+        solveDegreeZero();
+        return ;
+    }
+    sol = -b/a;
+    cout << "The solution is: " << sol << endl;
 
 }
 
-void EquationCalculator::solveDegreeTwo(){}
+void EquationCalculator::solveDegreeTwo(){
+    double a, b, c, sol1, sol2;
+    double discriminant;
+
+    for (auto it = terms.begin(); it != terms.end(); it++){
+        if(it->expo == 2) a = it->coeff;
+        else if (it->expo == 1) b = it->coeff;
+        else c=it->coeff;
+    }
+    discriminant = b*b - 4*a*c;
+
+    if(discriminant > 0){
+        //implement your own sqrt later 
+        sol1 = (-b + sqrt(discriminant) / (2*a));
+        sol2 = (-b - sqrt(discriminant) / (2*a));
+        cout << "Discriminant is strictly positive, the two solutions are:" << endl;
+        cout << sol1 << endl << sol2 << endl;
+    }
+    else if (discriminant == 0){
+        sol1 = -b / (2*a);
+        cout << "Discriminant is null, the solution is:" << endl;
+        cout << sol1 << endl;
+    }
+    else {
+        cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
+        double real, imaginary;
+        real = -b / (2*a);
+        imaginary = sqrt(-discriminant) / (2*a);
+        cout << real << " + " << imaginary << "i" << endl;
+        cout << real << " - " << imaginary << "i" << endl;
+    }
+}
