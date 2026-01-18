@@ -37,7 +37,8 @@ void EquationCalculator::getPolynomialDegree(){
         if(it->expo > maxExpo) maxExpo = it->expo;
     }
     equationDegree = maxExpo;
-    cout << "Polynomial degree: " << equationDegree << endl;
+    if(maxExpo > 0)
+        cout << "Polynomial degree: " << equationDegree << endl;
 }
 
 void EquationCalculator::solveDegreeZero(){
@@ -52,12 +53,11 @@ void EquationCalculator::solveDegreeZero(){
 }
 
 void EquationCalculator::solveDegreeOne(){
-    double a, b, c;
+    double a, b;
     double sol;
     for (auto it = terms.begin(); it != terms.end(); it++){
-        if(it->expo == 2) a = it->coeff;
-        else if (it->expo == 1) b = it->coeff;
-        else c=it->coeff;
+        if (it->expo == 1) a = it->coeff;
+        else b=it->coeff;
     }
     if(a == 0){
         solveDegreeZero();
@@ -77,14 +77,20 @@ void EquationCalculator::solveDegreeTwo(){
         else if (it->expo == 1) b = it->coeff;
         else c=it->coeff;
     }
+    if(a == 0){
+        solveDegreeOne();
+        return;
+    }
     discriminant = b*b - 4*a*c;
 
     if(discriminant > 0){
         //implement your own sqrt later 
-        sol1 = (-b + sqrt(discriminant) / (2*a));
-        sol2 = (-b - sqrt(discriminant) / (2*a));
+        cout << a<< " " << b << " " << c << endl;
+        sol1 = (-b - sqrt(discriminant)) / (2*a);
+        sol2 = (-b + sqrt(discriminant)) / (2*a);
         cout << "Discriminant is strictly positive, the two solutions are:" << endl;
-        cout << sol1 << endl << sol2 << endl;
+        cout  << sol1 << endl;
+        cout  <<sol2 << endl;
     }
     else if (discriminant == 0){
         sol1 = -b / (2*a);
@@ -93,10 +99,17 @@ void EquationCalculator::solveDegreeTwo(){
     }
     else {
         cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
-        double real, imaginary;
-        real = -b / (2*a);
-        imaginary = sqrt(-discriminant) / (2*a);
-        cout << real << " + " << imaginary << "i" << endl;
-        cout << real << " - " << imaginary << "i" << endl;
+        int gcd1 = getGCD(-b, 2*a);
+        int gcd2 = getGCD(sqrt(-discriminant) , 2*a);
+        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " + " << sqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
+        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " - " << sqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
     }
 }
+
+
+
+// 0.905239
+// -0.475131
+
+// -1/5 + 2i/5
+// -1/5 - 2i/5

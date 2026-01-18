@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <math.h>
+#include <iomanip>
 
 using namespace std;
 
@@ -58,3 +59,4 @@ bool isSign(char c);
 // char changeSign(char c);
 void fillTerms(string &, vector<string> &);
 void changeRightSigns(string &);
+int getGCD(int p, int q);

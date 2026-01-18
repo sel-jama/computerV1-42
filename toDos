@@ -1,0 +1,7 @@
+To Do next:
+
+ =====> Code the functions that you used from math.h : sqrt, abs (mySqrt , myAbs)
+ =====> Build the Makefile
+ =====> Test and test again 
+ =====> Check parse (does syntax not matter in mandatory ?)
+ =====> Optimize

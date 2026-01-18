@@ -21,3 +21,15 @@ void changeRightSigns(string &str){
     }
 }
 
+int getGCD(int p, int q){
+    // code your abs later
+    int a = abs(p);
+    int b = abs(q);
+    while (a != b){
+        if(a>b)
+            a = a-b;
+        else 
+            b = b-a;
+    }
+    return a;
+}
