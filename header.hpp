@@ -60,3 +60,5 @@ bool isSign(char c);
 void fillTerms(string &, vector<string> &);
 void changeRightSigns(string &);
 int getGCD(int p, int q);
+double mySqrt(double n);
+double myAbs(double n);

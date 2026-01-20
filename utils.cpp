@@ -22,9 +22,9 @@ void changeRightSigns(string &str){
 }
 
 int getGCD(int p, int q){
-    // code your abs later
-    int a = abs(p);
-    int b = abs(q);
+    // code your myAbs later
+    int a = myAbs(p);
+    int b = myAbs(q);
     while (a != b){
         if(a>b)
             a = a-b;
@@ -33,3 +33,27 @@ int getGCD(int p, int q){
     }
     return a;
 }
+
+double mySqrt(double n){ 
+    if (n < 2) return n;
+    double guess = n/2;
+    double x = 0;
+    double precision = 0.0001;
+    while (true){
+        x = (guess + n/guess)/2;
+        if (myAbs(x -  guess) < precision)
+            break;
+        guess = x;
+    }
+    return x;
+}
+
+double myAbs(double n){
+    if(n < 0) n = -n;
+    return n;
+
+}
+
+
+// 0.905239
+// -0.475131

@@ -86,8 +86,8 @@ void EquationCalculator::solveDegreeTwo(){
     if(discriminant > 0){
         //implement your own sqrt later 
         cout << a<< " " << b << " " << c << endl;
-        sol1 = (-b - sqrt(discriminant)) / (2*a);
-        sol2 = (-b + sqrt(discriminant)) / (2*a);
+        sol1 = (-b - mySqrt(discriminant)) / (2*a);
+        sol2 = (-b + mySqrt(discriminant)) / (2*a);
         cout << "Discriminant is strictly positive, the two solutions are:" << endl;
         cout  << sol1 << endl;
         cout  <<sol2 << endl;
@@ -101,8 +101,8 @@ void EquationCalculator::solveDegreeTwo(){
         cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
         int gcd1 = getGCD(-b, 2*a);
         int gcd2 = getGCD(sqrt(-discriminant) , 2*a);
-        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " + " << sqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
-        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " - " << sqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
+        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " + " << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
+        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " - " << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
     }
 }
 
