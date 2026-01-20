@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <vector>
 #include <map>
-#include <math.h>
 #include <iomanip>
 
 using namespace std;
@@ -24,9 +23,6 @@ class EquationParser {
 
     public:
         EquationParser(const string &eq) : equation(eq) {}
-        // string getLeftSide() const { return leftSide; }
-        // string getRightSide() const { return rightSide; }
-        // string getEquation() const { return equation; }
         vector<Term> &getTerms() {return terms;}
 
         void loadEquation(char *av);

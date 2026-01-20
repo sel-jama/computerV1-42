@@ -6,7 +6,7 @@ OBJ = ${SRC:.cpp=.o}
 
 CXX = g++
 
-CXXFLAGS = -WALL -WERROR -WEXTRA -std=c++11
+CXXFLAGS = -Wall -Werror -Wextra -std=c++11
 
 all : $(NAME)
 

@@ -53,7 +53,3 @@ double myAbs(double n){
     return n;
 
 }
-
-
-// 0.905239
-// -0.475131
