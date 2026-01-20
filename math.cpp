@@ -20,7 +20,8 @@ void EquationCalculator::printReducedForm(){
     double tmpCoeff;
 
     cout << "Reduced form: ";
-    for (auto it = terms.begin(); it != terms.end(); it++){
+    auto it = terms.begin();
+    for (; it != terms.end(); it++){
         tmpCoeff = it->coeff;
         if(it != terms.begin()){
             if(it->coeff < 0) {cout << " - "; tmpCoeff = -tmpCoeff;}
@@ -28,6 +29,8 @@ void EquationCalculator::printReducedForm(){
         }
         cout << tmpCoeff << " * " << "X^" << it->expo ;
     }
+    if(it == terms.begin())
+        cout << "0";
     cout << " = 0" << endl;
 }
 
@@ -54,6 +57,7 @@ void EquationCalculator::solveDegreeZero(){
 
 void EquationCalculator::solveDegreeOne(){
     double a, b;
+    a=b= 0;
     double sol;
     for (auto it = terms.begin(); it != terms.end(); it++){
         if (it->expo == 1) a = it->coeff;
@@ -64,7 +68,7 @@ void EquationCalculator::solveDegreeOne(){
         return ;
     }
     sol = -b/a;
-    cout << "The solution is: " << sol << endl;
+    cout << "The solution is: " << endl << sol << endl;
 
 }
 
@@ -72,6 +76,7 @@ void EquationCalculator::solveDegreeTwo(){
     double a, b, c, sol1, sol2;
     double discriminant;
 
+    a = b = c = sol1 = sol2 =  discriminant = 0;
     for (auto it = terms.begin(); it != terms.end(); it++){
         if(it->expo == 2) a = it->coeff;
         else if (it->expo == 1) b = it->coeff;
@@ -100,7 +105,24 @@ void EquationCalculator::solveDegreeTwo(){
         cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
         int gcd1 = getGCD(-b, 2*a);
         int gcd2 = getGCD(mySqrt(-discriminant) , 2*a);
-        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " + " << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
-        cout << -b/gcd1 << "/" << (2*a)/gcd1 << " - " << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
+        if(gcd1)
+            cout << -b/gcd1 << "/" << (2*a)/gcd1 << " + " ;
+        else
+            cout << -b << "/" << 2*a << " + ";
+
+        if(gcd2)
+            cout << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
+        else
+            cout << mySqrt(-discriminant) << "i/" << (2*a) << endl;
+        
+        if(gcd1)
+            cout << -b/gcd1 << "/" << (2*a)/gcd1 << " - " ;
+        else
+            cout << -b << "/" << 2*a << " - " ;
+        if (gcd2)
+            cout << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
+        else
+            cout << mySqrt(-discriminant) << "i/" << 2*a << endl;
+
     }
 }

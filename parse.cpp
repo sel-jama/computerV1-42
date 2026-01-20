@@ -4,7 +4,7 @@ void EquationParser::normalizeEquation(){
     equation.erase(remove(equation.begin(), equation.end(), ' '), equation.end());
     for(char &c: equation)
         c = toupper(c);
-    cout<< this->equation << endl;
+    // cout<< this->equation << endl;
     splitEquation();
     addSign();
 }

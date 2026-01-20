@@ -25,6 +25,9 @@ int getGCD(int p, int q){
     // code your myAbs later
     int a = myAbs(p);
     int b = myAbs(q);
+    if(!a) return b;
+    if(!b) return a;
+    
     while (a != b){
         if(a>b)
             a = a-b;
