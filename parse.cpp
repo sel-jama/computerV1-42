@@ -72,7 +72,7 @@ void EquationParser::extractCoeffAndExpo(){
             Term t;
             t.coeff = term.second;
             t.expo = term.first;
-            this->terms.push_back(t); 
+            this->terms.push_back(t);
         }
     }
 }

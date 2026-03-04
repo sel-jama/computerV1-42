@@ -21,6 +21,7 @@ void EquationCalculator::printReducedForm(){
 
     cout << "Reduced form: ";
     auto it = terms.begin();
+
     for (; it != terms.end(); it++){
         tmpCoeff = it->coeff;
         if(it != terms.begin()){
