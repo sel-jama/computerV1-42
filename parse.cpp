@@ -2,9 +2,10 @@
 
 void EquationParser::normalizeEquation(){
     equation.erase(remove(equation.begin(), equation.end(), ' '), equation.end());
+    if(equation.empty() || isWhiteSpacesOnly(equation))
+        throw invalid_argument("Empty equation");
     for(char &c: equation)
         c = toupper(c);
-    // cout<< this->equation << endl;
     splitEquation();
     addSign();
 }
@@ -17,20 +18,28 @@ void EquationParser::splitEquation(){
         leftSide = equation.substr(0, signPos);
         rightSide = equation.substr(signPos+1);
     }
+    else
+        throw invalid_argument("Equation must contain '=' sign");
+
+    if (leftSide.empty() || rightSide.empty())
+        throw invalid_argument("Equation must have both left and right sides");
 }
 
-void fillTerms(string &side, vector<string> &allTerms){
+void fillTerms(string& side, vector<string>& allTerms)
+{
+    string currentTerm;
 
-    string currentTerm = "";
-    
-    for(char c: side){
-        if(isSign(c) && !currentTerm.empty()){
+    for (string::iterator it = side.begin(); it != side.end(); ++it)
+    {
+        if (isSign(*it) && !currentTerm.empty())
+        {
             allTerms.push_back(currentTerm);
-            currentTerm = "";
+            currentTerm.clear();
         }
-        currentTerm += c;
+        currentTerm += *it;
     }
-    if(!currentTerm.empty())
+
+    if (!currentTerm.empty())
         allTerms.push_back(currentTerm);
 }
 
@@ -40,19 +49,14 @@ void EquationParser::extractTerms(){
     changeRightSigns(rightSide);
     fillTerms(rightSide, allTerms);
 
-    // for(auto it = allTerms.begin(); it != allTerms.end(); it++){
-    //     cout << "Term " << *it << endl;
-    // }
-
     //extract coeff and expos
     extractCoeffAndExpo();
 
     EquationCalculator calculate;
-    calculate.setTerms(this->getTerms());
 
-    // for(auto it = terms.begin(); it != terms.end(); it++){
-    //     cout << "Coeff: " << it->coeff << " Expo: " << it->expo << endl;
-    // }
+    calculate.setTerms(this->getTerms());
+    calculate.setDisplayTerms(this->getDisplayTerms());
+
     calculate.calculateSolution();
 
 }
@@ -67,6 +71,11 @@ void EquationParser::extractCoeffAndExpo(){
     }
 
     for(auto term : m){
+
+        Term dt;
+        dt.coeff = term.second;
+        dt.expo = term.first;
+        this->displayTerms.push_back(dt);
 
         if(term.second != 0){
             Term t;
@@ -84,29 +93,79 @@ Term EquationParser::parseTerm(string &s){
     char sign = '+';
     Term t ;
 
+    if (s.empty())
+        throw invalid_argument("Empty term");
+
     if (isSign(s[0])){
         sign = s[0];
         pos = 1;
     }
 
     size_t starPos = s.find('*', pos);
+    size_t xPos = s.find('X', pos);
+
     if(starPos == string::npos){
-        //just coeff like +4
-        coeffStr = s.substr(pos);
-        t.coeff = stod(coeffStr);
+
+
+        if(xPos == string::npos){
+            // pure number, e.g. "+4", "-9.3"
+            coeffStr = s.substr(pos);
+            try {
+                t.coeff = stod(coeffStr);
+            } catch (const invalid_argument&) {
+                throw invalid_argument("Invalid coefficient in term: '" + s + "'");
+            } catch (const out_of_range&) {
+                throw out_of_range("Coefficient out of range in term: '" + s + "'");
+            }
+            if(sign == '-') t.coeff = -t.coeff;
+            t.expo = 0;
+            return t;
+        }
+
+        // has an X but no '*', e.g. "X", "-X", "2X", "X^2"
+        coeffStr = s.substr(pos, xPos - pos);
+        if(coeffStr.empty())
+            t.coeff = 1;
+        else {
+            try {
+                t.coeff = stod(coeffStr);
+            } catch (const invalid_argument&) {
+                throw invalid_argument("Invalid coefficient in term: '" + s + "'");
+            } catch (const out_of_range&) {
+                throw out_of_range("Coefficient out of range in term: '" + s + "'");
+            }
+        }
         if(sign == '-') t.coeff = -t.coeff;
-        t.expo = 0;
+
+        size_t caretPos = s.find('^', xPos);
+        if (caretPos == string::npos){
+            t.expo = 1;
+            return t;
+        }
+        expoStr = s.substr(caretPos+1);
+        try {
+            t.expo = stoi(expoStr);
+        } catch (const invalid_argument&) {
+            throw invalid_argument("Invalid exponent in term: '" + s + "'");
+        } catch (const out_of_range&) {
+            throw out_of_range("Exponent out of range in term: '" + s + "'");
+        }
         return t;
     }
 
     coeffStr = s.substr(pos, starPos-pos);
-    t.coeff = stod(coeffStr);
-        if(sign == '-') t.coeff = -t.coeff;
-    
-    size_t xPos = s.find("X", starPos);
-    if(xPos == string::npos){ //check this later, maybe not the best option, try to test 2X+4*4 for example
-        t.expo = 0;
-        return t;
+    try {
+        t.coeff = stod(coeffStr);
+    } catch (const invalid_argument&) {
+        throw invalid_argument("Invalid coefficient in term: '" + s + "'");
+    } catch (const out_of_range&) {
+        throw out_of_range("Coefficient out of range in term: '" + s + "'");
+    }
+    if(sign == '-') t.coeff = -t.coeff;
+
+    // size_t xPos = s.find("X", starPos);
+    if(xPos == string::npos){
+        throw invalid_argument("Invalid term, expected 'coeff * X^expo': '" + s + "'");
     } 
 
     size_t caretPos = s.find('^', xPos);
@@ -115,6 +174,12 @@ Term EquationParser::parseTerm(string &s){
         return t;
     }
     expoStr = s.substr(caretPos+1);
-    t.expo = stoi(expoStr);
+    try {
+        t.expo = stoi(expoStr);
+    } catch (const invalid_argument&) {
+        throw invalid_argument("Invalid exponent in term: '" + s + "'");
+    } catch (const out_of_range&) {
+        throw out_of_range("Exponent out of range in term: '" + s + "'");
+    }
     return t;
 }

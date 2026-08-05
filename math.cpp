@@ -20,17 +20,17 @@ void EquationCalculator::printReducedForm(){
     double tmpCoeff;
 
     cout << "Reduced form: ";
-    auto it = terms.begin();
+    auto it = displayTerms.begin();
 
-    for (; it != terms.end(); it++){
+    for (; it != displayTerms.end(); it++){
         tmpCoeff = it->coeff;
-        if(it != terms.begin()){
+        if(it != displayTerms.begin()){
             if(it->coeff < 0) {cout << " - "; tmpCoeff = -tmpCoeff;}
             else cout << " + ";
         }
         cout << tmpCoeff << " * " << "X^" << it->expo ;
     }
-    if(it == terms.begin())
+    if(it == displayTerms.begin())
         cout << "0";
     cout << " = 0" << endl;
 }
@@ -38,28 +38,31 @@ void EquationCalculator::printReducedForm(){
 void EquationCalculator::getPolynomialDegree(){
     int maxExpo = 0;
     for (auto it = terms.begin(); it!= terms.end(); it++){
-        if(it->expo > maxExpo) maxExpo = it->expo;
+        maxExpo = max(maxExpo, it->expo);
     }
     equationDegree = maxExpo;
     if(maxExpo > 0)
         cout << "Polynomial degree: " << equationDegree << endl;
 }
 
-void EquationCalculator::solveDegreeZero(){
+void EquationCalculator::solveDegreeZero()
+{
     double c = 0;
-    for (auto it = terms.begin(); it != terms.end(); it++)
-        if(it->expo == 0) c = it->coeff;
-    if(c==0)
+    if(!terms.empty())
+        c = terms.front().coeff;
+
+    if (c == 0)
         cout << "Any real number is a solution.";
     else
         cout << "No solution.";
+
     cout << endl;
 }
 
 void EquationCalculator::solveDegreeOne(){
-    double a, b;
+    double a, b, sol;
     a=b= 0;
-    double sol;
+    
     for (auto it = terms.begin(); it != terms.end(); it++){
         if (it->expo == 1) a = it->coeff;
         else b=it->coeff;
@@ -69,7 +72,8 @@ void EquationCalculator::solveDegreeOne(){
         return ;
     }
     sol = -b/a;
-    cout << "The solution is: " << endl << sol << endl;
+    if(sol == 0) sol = 0;
+    cout << "The solution is:" << endl << sol << endl;
 
 }
 
@@ -89,13 +93,12 @@ void EquationCalculator::solveDegreeTwo(){
     }
     discriminant = b*b - 4*a*c;
 
-    if (b==0) b=0; //for -0
+    if (b==0) b=0;
     if(discriminant > 0){
-        //implement your own sqrt later 
         sol1 = (-b - mySqrt(discriminant)) / (2*a);
         sol2 = (-b + mySqrt(discriminant)) / (2*a);
-        if (sol1 == 0) sol1 = 0;
-        if (sol2 == 0) sol2 = 0;
+        if (myAbs(sol1) < 0.000001) sol1 = 0;
+        if (myAbs(sol2) < 0.000001) sol2 = 0;
         cout << "Discriminant is strictly positive, the two solutions are:" << endl;
         cout  << sol1 << endl;
         cout  << sol2 << endl;
@@ -110,32 +113,25 @@ void EquationCalculator::solveDegreeTwo(){
         cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
         sol1 = -b/(2*a);
         sol2 = mySqrt(-discriminant)/(2*a);
-        if (sol1 == 0) sol1 = 0;
-        if (sol2 == 0) sol2 = 0;
+        if (myAbs(sol1) < 0.000001) sol1 = 0;
+        if (myAbs(sol2) < 0.000001) sol2 = 0;
 
-        cout << sol1  << " + " << sol2 << "i" << endl;
-        cout << sol1 << " - " <<  sol2 << "i" << endl;
+        long n1, d1, n2, d2;
+        bool frac1 = toFraction(-b, 2*a, n1, d1);
+        bool frac2 = toFraction(mySqrt(-discriminant), 2*a, n2, d2);
 
-        // int gcd1 = getGCD(-b, 2*a);
-        // int gcd2 = getGCD(mySqrt(-discriminant) , 2*a);
-        // if(gcd1)
-        //     cout << -b/gcd1 << "/" << (2*a)/gcd1 << " + " ;
-        // else
-        //     cout << -b << "/" << 2*a << " + ";
+        if (frac1 && frac2){
+            string realPart = (n1 == 0) ? "0"
+                : (d1 == 1 ? to_string(n1) : to_string(n1) + "/" + to_string(d1));
+            string imagPart = (d2 == 1) ? to_string(n2) + "i"
+                : to_string(n2) + "i/" + to_string(d2);
 
-        // if(gcd2)
-        //     cout << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
-        // else
-        //     cout << mySqrt(-discriminant) << "i/" << (2*a) << endl;
-        
-        // if(gcd1)
-        //     cout << -b/gcd1 << "/" << (2*a)/gcd1 << " - " ;
-        // else
-        //     cout << -b << "/" << 2*a << " - " ;
-        // if (gcd2)
-        //     cout << mySqrt(-discriminant)/gcd2 << "i/" << (2*a)/gcd2 << endl;
-        // else
-        //     cout << mySqrt(-discriminant) << "i/" << 2*a << endl;
-
+            cout << realPart << " + " << imagPart << endl;
+            cout << realPart << " - " << imagPart << endl;
+        }
+        else {
+            cout << sol1  << " + " << sol2 << "i" << endl;
+            cout << sol1 << " - " <<  sol2 << "i" << endl;
+        }
     }
 }
